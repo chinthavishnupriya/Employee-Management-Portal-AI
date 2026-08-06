@@ -1,0 +1,31 @@
+# Git
+.git
+.gitignore
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Environment
+.env
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Uploads
+backend/uploads/
+
+# Resume storage
+backend/resume_storage/
+
+# Reports
+*_report.csv

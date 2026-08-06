@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+from fileinput import filename
+
+from fastapi import APIRouter, Depends, Path
 
 from backend.auth import verify_token
 from backend.schemas import ProfileUpdate
@@ -44,30 +46,27 @@ def upload_profile_photo(
     current_user: str = Depends(verify_token)
 ):
 
-    folder = "backend/uploads/profile"
+    from pathlib import Path
 
-    os.makedirs(folder, exist_ok=True)
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    UPLOAD_DIR = BASE_DIR / "uploads" / "profile"
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
     filename = current_user.replace("@", "_") + "_" + file.filename
 
-    filepath = os.path.join(folder, filename)
+    filepath = UPLOAD_DIR / filename
 
     with open(filepath, "wb") as buffer:
+      shutil.copyfileobj(file.file, buffer)
 
-        shutil.copyfileobj(file.file, buffer)
+    photo_url = f"/backend/uploads/profile/{filename}"
 
     profile_service.update_profile_photo(
-
         current_user,
-
-        "/" + filepath.replace("\\", "/")
-
+        photo_url
     )
 
     return {
-
         "message": "Photo uploaded successfully",
-
-        "photo": "/" + filepath.replace("\\", "/")
-
-    }
+        "photo": photo_url
+}

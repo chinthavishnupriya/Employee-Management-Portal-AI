@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: employee-postgres
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Cpriya#10*
+      POSTGRES_DB: employee_management
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: employee-backend
+    restart: always
+
+    depends_on:
+      - postgres
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      DATABASE_URL: postgresql://postgres:Cpriya%2310*@host.docker.internal:5432/employee_management
+      OLLAMA_HOST: http://host.docker.internal:11434
+  frontend:
+    build: ./frontend
+    container_name: employee-frontend
+    restart: always
+
+    depends_on:
+      - backend
+
+    ports:
+      - "5173:80"
+
+volumes:
+  postgres_data:
