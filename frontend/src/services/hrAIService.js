@@ -2,13 +2,13 @@ import api from "./api";
 
 export const askHRAI = async (question) => {
 
-    console.log("Sending request...");
+    console.log("Sending request to /ai/chat...");
 
-    const response = await api.post("/hr-ai/ask", {
-        question,
+    const response = await api.post("/ai/chat", {
+        prompt: question,
     });
 
     console.log("Response:", response.data);
 
-    return response.data.answer;
+    return response.data.response;
 };
