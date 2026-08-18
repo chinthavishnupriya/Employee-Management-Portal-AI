@@ -6,7 +6,7 @@ class LLMService:
 
     def __init__(self):
 
-        self.model = "llama3.2"
+        self.model = "tinyllama"
 
         # Use host.docker.internal inside Docker
         self.client = ollama.Client(
