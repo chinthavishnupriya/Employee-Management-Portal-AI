@@ -1,9 +1,10 @@
 import api from "./api";
 
 export const askAI = async (question) => {
-    const response = await api.post("/hr-ai/ask", {
-        question
+
+    const response = await api.post("/ai/chat", {
+        prompt: question,
     });
 
-    return response.data.answer;
+    return response.data.response;
 };
