@@ -4,6 +4,7 @@ from backend.ai.payroll_ai import payroll_ai
 from backend.ai.leave_ai import leave_ai
 from backend.ai.profile_ai import profile_ai
 from backend.ai.performance_ai import performance_ai
+from backend.models import Employee
 
 
 class AIService:
@@ -295,7 +296,69 @@ Instructions:
 - Be professional.
 """
             )
+# ==========================================
+# Employee Database AI
+# ==========================================
 
+employee_list_keywords = [
+    "show all employees",
+    "list all employees",
+    "all employees",
+    "employee list",
+    "employees list",
+    "show employees",
+    "list employees"
+]
+
+if any(keyword in prompt_lower for keyword in employee_list_keywords):
+
+    if db is None:
+        return "Unable to retrieve employee information."
+
+    try:
+        employees = (
+            db.query(Employee)
+            .order_by(Employee.id)
+            .all()
+        )
+
+        if not employees:
+            return "No employees found in the database."
+
+        lines = [
+            "Employees found in the database:",
+            ""
+        ]
+
+        for employee in employees:
+
+            department_name = (
+                employee.department.department_name
+                if employee.department
+                else "Not assigned"
+            )
+
+            lines.append(
+                f"Employee ID: {employee.employee_id}\n"
+                f"Name: {employee.full_name}\n"
+                f"Email: {employee.email}\n"
+                f"Department: {department_name}\n"
+                f"Designation: {employee.designation}\n"
+                f"Salary: {employee.salary}\n"
+                f"Phone: {employee.phone or 'Not provided'}\n"
+                f"Address: {employee.address or 'Not provided'}\n"
+                f"Joining Date: {employee.joining_date or 'Not provided'}\n"
+                f"Date of Birth: {employee.date_of_birth or 'Not provided'}\n"
+                f"Nationality: {employee.nationality or 'Not provided'}\n"
+                f"Emergency Contact: {employee.emergency_contact or 'Not provided'}\n"
+                "----------------------------------------"
+            )
+
+        return "\n".join(lines)
+
+    except Exception as e:
+        print("Employee database error:", e)
+        return "Unable to retrieve employee information."
         # ==========================================
         # General HR AI
         # ==========================================
