@@ -90,7 +90,7 @@ function ChangePassword() {
                     <img
     src={
         profile.profile_photo
-            ? `http://127.0.0.1:8000${profile.profile_photo}`
+            ? `http://13.53.158.40:8000${profile.profile_photo}`
             : "/images/admin.png"
     }
     alt="Profile"

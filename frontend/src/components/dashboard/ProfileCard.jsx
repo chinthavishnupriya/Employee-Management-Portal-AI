@@ -15,7 +15,7 @@ function ProfileCard({ employee }) {
                 <img
                     src={
                         employee.profile_photo
-                            ? `http://127.0.0.1:8000${employee.profile_photo}`
+                            ? `http://13.53.158.40:8000${employee.profile_photo}`
                             : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                     }
                     alt="Profile"

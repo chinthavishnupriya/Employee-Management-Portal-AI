@@ -18,7 +18,11 @@ function AIAssistant() {
 
             const result = await askHRAI(prompt);
 
-setResponse(result);
+setResponse(
+                typeof result === "string"
+                    ? result.replace(/\\n/g, "\n")
+                    : result
+            );
 
         }
 

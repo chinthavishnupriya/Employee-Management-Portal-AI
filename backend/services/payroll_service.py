@@ -1,11 +1,26 @@
 from sqlalchemy.orm import Session
-
 from backend.database import SessionLocal
 from backend.models import Payroll, Employee
-
-from backend.database import SessionLocal
-from backend.models import Payroll
 from datetime import datetime
+
+
+def resolve_employee_id(db, employee_id):
+    """
+    Convert the visible Employee ID into the internal
+    database Employee.id used by the Payroll foreign key.
+    """
+
+    employee = db.query(Employee).filter(
+        Employee.employee_id == str(employee_id)
+    ).first()
+
+    if employee is None:
+        raise ValueError(
+            f"Employee ID '{employee_id}' was not found."
+        )
+
+    return employee.id
+
 
 def create_payroll(data):
 
@@ -13,18 +28,24 @@ def create_payroll(data):
 
     try:
 
+        # Convert visible Employee ID -> database Employee.id
+        internal_employee_id = resolve_employee_id(
+            db,
+            data.employee_id
+        )
+
         payroll = Payroll(
-    employee_id=data.employee_id,
-    basic_salary=data.basic_salary,
-    bonus=data.bonus,
-    allowances=data.allowances,
-    deductions=data.deductions,
-    net_salary=data.net_salary,
-    pay_date=datetime.strptime(
-        data.pay_date,
-        "%Y-%m-%d"
-    ).date()
-)
+            employee_id=internal_employee_id,
+            basic_salary=data.basic_salary,
+            bonus=data.bonus,
+            allowances=data.allowances,
+            deductions=data.deductions,
+            net_salary=data.net_salary,
+            pay_date=datetime.strptime(
+                data.pay_date,
+                "%Y-%m-%d"
+            ).date()
+        )
 
         db.add(payroll)
         db.commit()
@@ -35,8 +56,16 @@ def create_payroll(data):
             "payroll": payroll
         }
 
+    except ValueError as e:
+
+        return {
+            "message": str(e)
+        }
+
     finally:
         db.close()
+
+
 def get_my_payroll(email):
 
     db: Session = SessionLocal()
@@ -59,7 +88,6 @@ def get_my_payroll(email):
         for payroll in payrolls:
 
             result.append({
-
                 "id": payroll.id,
                 "basic_salary": payroll.basic_salary,
                 "bonus": payroll.bonus,
@@ -67,13 +95,14 @@ def get_my_payroll(email):
                 "deductions": payroll.deductions,
                 "net_salary": payroll.net_salary,
                 "pay_date": payroll.pay_date
-
             })
 
         return result
 
     finally:
         db.close()
+
+
 def get_payrolls():
 
     db: Session = SessionLocal()
@@ -91,34 +120,33 @@ def get_payrolls():
             ).first()
 
             result.append({
-
                 "id": payroll.id,
-
-                "employee_id": payroll.employee_id,
-
-                "employee": employee.full_name if employee else "",
-
-                "department": employee.department.department_name
-                if employee and employee.department else "",
-
+                "employee_id": (
+                    employee.employee_id
+                    if employee else ""
+                ),
+                "employee": (
+                    employee.full_name
+                    if employee else ""
+                ),
+                "department": (
+                    employee.department.department_name
+                    if employee and employee.department
+                    else ""
+                ),
                 "basic_salary": payroll.basic_salary,
-
                 "bonus": payroll.bonus,
-
                 "allowances": payroll.allowances,
-
                 "deductions": payroll.deductions,
-
                 "net_salary": payroll.net_salary,
-
                 "pay_date": payroll.pay_date
-
             })
 
         return result
 
     finally:
         db.close()
+
 
 def get_payroll(payroll_id):
 
@@ -131,12 +159,15 @@ def get_payroll(payroll_id):
         ).first()
 
         if payroll is None:
-            return {"message": "Payroll not found"}
+            return {
+                "message": "Payroll not found"
+            }
 
         return payroll
 
     finally:
         db.close()
+
 
 def update_payroll(payroll_id, data):
 
@@ -153,7 +184,13 @@ def update_payroll(payroll_id, data):
                 "message": "Payroll not found"
             }
 
-        payroll.employee_id = data.employee_id
+        # Convert visible Employee ID -> database Employee.id
+        internal_employee_id = resolve_employee_id(
+            db,
+            data.employee_id
+        )
+
+        payroll.employee_id = internal_employee_id
         payroll.basic_salary = data.basic_salary
         payroll.bonus = data.bonus
         payroll.allowances = data.allowances
@@ -172,8 +209,15 @@ def update_payroll(payroll_id, data):
             "payroll": payroll
         }
 
+    except ValueError as e:
+
+        return {
+            "message": str(e)
+        }
+
     finally:
         db.close()
+
 
 def delete_payroll(payroll_id):
 

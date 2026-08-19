@@ -16,6 +16,7 @@ function Performance() {
 
     const [form, setForm] = useState({
         employee_id: "",
+        review_date: new Date().toISOString().split("T")[0],
         rating: "",
         reviewer: "",
         promotion_status: "",
@@ -75,6 +76,7 @@ function Performance() {
 
             setForm({
                 employee_id: "",
+                review_date: new Date().toISOString().split("T")[0],
                 rating: "",
                 reviewer: "",
                 promotion_status: "",
@@ -161,6 +163,21 @@ function Performance() {
                                     }
 
                                 </select>
+
+                            </div>
+
+                            <div className="col-md-6 mb-3">
+
+                                <label>Review Date</label>
+
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    name="review_date"
+                                    value={form.review_date}
+                                    onChange={handleChange}
+                                    required
+                                />
 
                             </div>
 

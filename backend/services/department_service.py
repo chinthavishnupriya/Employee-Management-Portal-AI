@@ -134,3 +134,92 @@ def employee_dashboard(current_user):
     finally:
 
         db.close()
+
+# ==========================
+# Update Department
+# ==========================
+def update_department(department_id, department):
+
+    db: Session = SessionLocal()
+
+    try:
+
+        existing = db.query(Department).filter(
+            Department.id == department_id
+        ).first()
+
+        if existing is None:
+            return {
+                "error": "Department not found"
+            }
+
+        existing.department_name = department.department_name
+        existing.description = department.description
+
+        db.commit()
+        db.refresh(existing)
+
+        return {
+            "message": "Department updated successfully",
+            "department": existing
+        }
+
+    except Exception as e:
+
+        db.rollback()
+
+        return {
+            "error": str(e)
+        }
+
+    finally:
+
+        db.close()
+
+
+# ==========================
+# Delete Department
+# ==========================
+def delete_department(department_id):
+
+    db: Session = SessionLocal()
+
+    try:
+
+        existing = db.query(Department).filter(
+            Department.id == department_id
+        ).first()
+
+        if existing is None:
+            return {
+                "error": "Department not found"
+            }
+
+        # Do not delete a department that still has employees.
+        employee_count = db.query(Employee).filter(
+            Employee.department_id == department_id
+        ).count()
+
+        if employee_count > 0:
+            return {
+                "error": "Cannot delete department because employees are assigned to it."
+            }
+
+        db.delete(existing)
+        db.commit()
+
+        return {
+            "message": "Department deleted successfully"
+        }
+
+    except Exception as e:
+
+        db.rollback()
+
+        return {
+            "error": str(e)
+        }
+
+    finally:
+
+        db.close()

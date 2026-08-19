@@ -72,10 +72,13 @@ def get_leave_requests():
 
             result.append({
 
+                "id": leave.id,
+                "employee_id": leave.employee_id,
                 "employee_name": leave.employee.full_name,
                 "leave_type": leave.leave_type,
                 "start_date": str(leave.start_date),
                 "end_date": str(leave.end_date),
+                "reason": leave.reason,
                 "status": leave.status
 
             })

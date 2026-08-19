@@ -5,9 +5,9 @@ services:
     restart: always
 
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Cpriya#10*
-      POSTGRES_DB: employee_management
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
 
     ports:
       - "5432:5432"
@@ -26,9 +26,12 @@ services:
     ports:
       - "8000:8000"
 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
     environment:
-      DATABASE_URL: postgresql://postgres:Cpriya%2310*@host.docker.internal:5432/employee_management
-      OLLAMA_HOST: http://host.docker.internal:11434
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      OLLAMA_HOST: ${OLLAMA_HOST}
   frontend:
     build: ./frontend
     container_name: employee-frontend

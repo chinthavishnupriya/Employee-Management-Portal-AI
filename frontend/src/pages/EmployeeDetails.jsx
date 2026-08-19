@@ -55,7 +55,7 @@ function EmployeeDetails() {
                         <img
                             src={
                                 employee.profile_photo
-                                    ? `http://127.0.0.1:8000${employee.profile_photo}`
+                                    ? `http://13.53.158.40:8000${employee.profile_photo}`
                                     : "https://via.placeholder.com/180"
                             }
                             alt="Profile"

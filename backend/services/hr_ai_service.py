@@ -7,18 +7,22 @@ def ask_hr_ai(
     email: str
 ):
 
-    question_lower = question.lower()
+    question_lower = question.lower().strip()
+    role = (role or "").strip().lower()
 
     # ==========================================
-    # Employee Restrictions
+    # EMPLOYEE RESTRICTIONS
     # ==========================================
 
-    if role == "Employee":
+    if role == "employee":
 
         restricted_keywords = [
 
             "all employees",
             "employee list",
+            "list employees",
+            "show employees",
+            "show all employee",
             "salary of",
             "attendance report",
             "payroll report",
@@ -43,14 +47,14 @@ def ask_hr_ai(
 
                 return (
                     "Sorry, you are not authorized to access "
-                    "this information."
+                    "other employees' information."
                 )
 
     # ==========================================
-    # HR Restrictions
+    # HR RESTRICTIONS
     # ==========================================
 
-    elif role == "HR":
+    elif role == "hr":
 
         restricted_keywords = [
 
@@ -71,13 +75,26 @@ def ask_hr_ai(
                 )
 
     # ==========================================
-    # Send to AI Router
+    # ADMIN
+    # ==========================================
+
+    elif role == "admin":
+        pass
+
+    # ==========================================
+    # INVALID ROLE
+    # ==========================================
+
+    else:
+
+        return "Invalid user role."
+
+    # ==========================================
+    # SEND TO AI ROUTER
     # ==========================================
 
     return route_question(
-
         question=question,
-        role=role,
+        role=role.title(),
         email=email
-
     )

@@ -13,11 +13,15 @@ import {
     updateProfile
 } from "../services/employeeProfileService";
 
+import { uploadProfilePhoto } from "../services/profilePhotoService";
+
 function EmployeeProfile() {
 
     const [profile, setProfile] = useState({});
 
     const [activeTab, setActiveTab] = useState("personal");
+
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
 
@@ -38,6 +42,42 @@ function EmployeeProfile() {
         catch {
 
             alert("Unable to load profile");
+
+        }
+
+    }
+
+    async function handlePhotoChange(e) {
+
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        try {
+
+            setUploading(true);
+
+            await uploadProfilePhoto(file);
+
+            alert("Profile photo uploaded successfully.");
+
+            await loadProfile();
+
+        }
+
+        catch (error) {
+
+            console.log(error);
+
+            alert("Profile photo upload failed.");
+
+        }
+
+        finally {
+
+            setUploading(false);
+
+            e.target.value = "";
 
         }
 
@@ -82,6 +122,10 @@ function EmployeeProfile() {
             <ProfileHeader
 
                 profile={profile}
+
+                onPhotoChange={handlePhotoChange}
+
+                uploading={uploading}
 
             />
 

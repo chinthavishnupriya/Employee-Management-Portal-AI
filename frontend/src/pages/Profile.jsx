@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Layout from "../components/Layout";
-import { getProfile } from "../services/profileService";
+import { getProfile, uploadProfilePhoto } from "../services/profileService";
 
 import {
     FaEnvelope,
@@ -19,6 +19,7 @@ function Profile() {
     const navigate = useNavigate();
 
     const [profile, setProfile] = useState({});
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         loadProfile();
@@ -42,6 +43,36 @@ function Profile() {
 
     }
 
+    async function handlePhotoChange(e) {
+
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        try {
+
+            setUploading(true);
+
+            await uploadProfilePhoto(file);
+
+            alert("Profile photo uploaded successfully.");
+
+            await loadProfile();
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Unable to upload profile photo.");
+
+        } finally {
+
+            setUploading(false);
+
+        }
+
+    }
+
     return (
 
         <Layout>
@@ -57,7 +88,7 @@ function Profile() {
                         <img
                             src={
                                 profile.profile_photo
-                                    ? `http://127.0.0.1:8000${profile.profile_photo}`
+                                    ? `http://13.53.158.40:8000${profile.profile_photo}`
                                     : "/images/admin.png"
                             }
                             alt="Admin"
@@ -85,12 +116,23 @@ function Profile() {
                         <hr />
 
                         <button
-                            className="btn btn-primary px-4"
+                            className="btn btn-primary px-4 me-2"
                             onClick={() => navigate("/edit-profile")}
                         >
                             <FaEdit className="me-2" />
                             Edit Profile
                         </button>
+
+                        <label className="btn btn-success px-4">
+                            {uploading ? "Uploading..." : "Change Photo"}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handlePhotoChange}
+                                disabled={uploading}
+                                style={{ display: "none" }}
+                            />
+                        </label>
 
                     </div>
 

@@ -159,7 +159,7 @@ function DocumentList({
 
     <a
 
-        href={`http://127.0.0.1:8000${doc.file_path}`}
+        href={`http://13.53.158.40:8000${doc.file_path}`}
 
         target="_blank"
 

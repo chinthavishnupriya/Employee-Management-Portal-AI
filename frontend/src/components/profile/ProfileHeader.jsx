@@ -1,4 +1,4 @@
-function ProfileHeader({ profile }) {
+function ProfileHeader({ profile, onPhotoChange, uploading }) {
 
     return (
 
@@ -14,7 +14,7 @@ function ProfileHeader({ profile }) {
                 <img
                     src={
                         profile.profile_photo
-                            ? `http://127.0.0.1:8000${profile.profile_photo}`
+                            ? `http://13.53.158.40:8000${profile.profile_photo}?v=${Date.now()}`
                             : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                     }
                     alt="Profile"
@@ -26,6 +26,29 @@ function ProfileHeader({ profile }) {
                         border: "5px solid #2563EB"
                     }}
                 />
+
+                <div className="mt-3">
+
+                    <label
+                        className="btn btn-primary"
+                        style={{
+                            cursor: uploading ? "not-allowed" : "pointer"
+                        }}
+                    >
+
+                        {uploading ? "Uploading..." : "Change Photo"}
+
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={onPhotoChange}
+                            disabled={uploading}
+                            style={{ display: "none" }}
+                        />
+
+                    </label>
+
+                </div>
 
                 <h3 className="mt-3">
 

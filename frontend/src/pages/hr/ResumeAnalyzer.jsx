@@ -27,7 +27,7 @@ const ResumeAnalyzer = () => {
             setResult("");
 
             const response = await axios.post(
-                "http://127.0.0.1:8000/resume/analyze",
+                "http://13.53.158.40:8000/resume/analyze",
                 formData,
                 {
                     headers: {

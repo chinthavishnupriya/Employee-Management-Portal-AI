@@ -35,14 +35,14 @@ async def upload_photo(current_user, photo: UploadFile):
             filename
         )
         print("Saving image to:", filepath)
-        with open(filepath, "wb") as file:
-            file.write(await photo.read())
-        print("Saving image to:", filepath)
+
+        image_data = await photo.read()
 
         with open(filepath, "wb") as file:
-            file.write(await photo.read())
+            file.write(image_data)
 
-        print("Image saved successfully")
+        print("Image saved successfully:", filepath)
+        print("Image size:", len(image_data), "bytes")
         # Save URL, NOT filesystem path
         employee.profile_photo = f"/uploads/profile_photos/{filename}"
 

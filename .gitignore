@@ -35,3 +35,13 @@ backend/resume_storage/
 
 # Generated reports
 *_report.csv
+# Frontend environment files
+frontend/.env
+frontend/.env.local
+frontend/.env.development
+frontend/.env.development.local
+frontend/.env.test
+frontend/.env.test.local
+
+# Frontend production environment
+frontend/.env.production

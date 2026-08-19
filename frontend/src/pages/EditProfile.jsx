@@ -48,7 +48,7 @@ function EditProfile() {
             if (data.profile_photo) {
 
                 setPreview(
-                    `http://127.0.0.1:8000${data.profile_photo}`
+                    `http://13.53.158.40:8000${data.profile_photo}`
                 );
 
             } else {
